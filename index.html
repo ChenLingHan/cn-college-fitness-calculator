@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#231a48">
+  <meta name="description" content="按国家学生体质健康标准（2014年修订）计算大学生体测总分、等级及单项得分。">
+  <title>大学生体测计算器</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./standards.js"></script>
+  <script defer src="./calculator.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="./" aria-label="大学生体测计算器首页">
+        <span class="brand-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        体测计算器
+      </a>
+      <a class="source-link" href="https://sport.nuist.edu.cn/tzcs1/tzjkbz1.htm" target="_blank" rel="noopener noreferrer">查看评分标准 <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-track" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="hero-kicker"><span></span> 国家学生体质健康标准 · 2014 年修订</p>
+        <h1 id="page-title">大学生体测计算器</h1>
+        <p>输入体测数据，一次算出单项得分、附加分和学年总评。</p>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section class="card input-card" aria-labelledby="form-title">
+        <div class="card-heading">
+          <h2 id="form-title">录入体测数据</h2>
+          <button class="text-button" id="example" type="button">填入示例</button>
+        </div>
+
+        <form id="fitness-form" novalidate>
+          <div class="form-grid profile">
+            <fieldset>
+              <legend>性别</legend>
+              <div class="segments">
+                <label><input type="radio" name="sex" value="male" required><span>男生</span></label>
+                <label><input type="radio" name="sex" value="female" required><span>女生</span></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>年级组</legend>
+              <div class="segments">
+                <label><input type="radio" name="year" value="year1" required><span>大一 / 大二</span></label>
+                <label><input type="radio" name="year" value="year3" required><span>大三 / 大四</span></label>
+              </div>
+            </fieldset>
+          </div>
+
+          <section class="form-section" aria-labelledby="body-title">
+            <div class="section-heading">
+              <h3 id="body-title">身高与体重</h3>
+              <output id="bmi-preview" for="height weight" class="bmi-preview">BMI 自动计算</output>
+            </div>
+            <div class="form-grid">
+              <label class="field" for="height">身高
+                <span class="input-wrap"><input id="height" name="height" type="number" inputmode="decimal" min="0.1" step="0.1" placeholder="例如 175" required><span class="unit">cm</span></span>
+              </label>
+              <label class="field" for="weight">体重
+                <span class="input-wrap"><input id="weight" name="weight" type="number" inputmode="decimal" min="0.1" step="0.1" placeholder="例如 65" required><span class="unit">kg</span></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section" aria-labelledby="events-title">
+            <div class="section-heading"><h3 id="events-title">体能项目</h3></div>
+            <div class="form-grid event-grid">
+              <label class="field" for="lung">肺活量
+                <span class="input-wrap"><input id="lung" name="lung" type="number" inputmode="numeric" min="0" step="1" placeholder="例如 4000" required><span class="unit">mL</span></span>
+              </label>
+              <label class="field" for="sprint">50 米跑
+                <span class="input-wrap"><input id="sprint" name="sprint" type="number" inputmode="decimal" min="0.1" step="0.1" placeholder="例如 7.8" required><span class="unit">秒</span></span>
+              </label>
+              <label class="field" for="reach">坐位体前屈
+                <span class="input-wrap"><input id="reach" name="reach" type="number" inputmode="decimal" step="0.1" placeholder="可填写负数" required><span class="unit">cm</span></span>
+              </label>
+              <label class="field" for="jump">立定跳远
+                <span class="input-wrap"><input id="jump" name="jump" type="number" inputmode="numeric" min="0" step="1" placeholder="例如 220" required><span class="unit">cm</span></span>
+              </label>
+              <label class="field" for="strength"><span id="strength-label">引体向上 / 仰卧起坐</span>
+                <span class="input-wrap"><input id="strength" name="strength" type="number" inputmode="numeric" min="0" step="1" placeholder="填写次数" required><span class="unit">次</span></span>
+              </label>
+              <fieldset class="time-field">
+                <legend id="endurance-label">1000 米 / 800 米跑</legend>
+                <div class="time-inputs">
+                  <label class="input-wrap"><input id="minutes" name="minutes" type="number" inputmode="numeric" min="0" step="1" placeholder="3" aria-label="耐力跑分钟数" required><span class="unit">分</span></label>
+                  <label class="input-wrap"><input id="seconds" name="seconds" type="number" inputmode="numeric" min="0" max="59" step="1" placeholder="45" aria-label="耐力跑秒数" required><span class="unit">秒</span></label>
+                </div>
+              </fieldset>
+            </div>
+          </section>
+
+          <p id="form-message" class="form-message" role="status" hidden></p>
+          <div class="form-actions">
+            <button class="primary" type="submit" disabled>计算体测成绩 <span aria-hidden="true">→</span></button>
+            <button class="secondary" type="reset">清空</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="results-column">
+        <section class="card result-card" id="results" aria-labelledby="result-title" tabindex="-1">
+          <div class="card-heading">
+            <h2 id="result-title">成绩总览</h2>
+            <span id="result-status" class="status-pill">待计算</span>
+          </div>
+          <div class="score-summary">
+            <p id="score-context">学年总分</p>
+            <div class="total-line"><strong id="total-score">—</strong><span>/ 120 分</span></div>
+            <p id="empty-note">填完体测数据后，点击计算查看结果。</p>
+            <div class="score-parts" id="score-parts" hidden>
+              <div><span>标准分</span><strong id="base-score"></strong></div>
+              <div><span>附加分</span><strong id="bonus-score"></strong></div>
+            </div>
+          </div>
+          <div class="result-detail" id="result-detail" hidden>
+            <h3>单项得分明细</h3>
+            <table>
+              <thead><tr><th scope="col">项目 / 权重</th><th scope="col">实测</th><th scope="col">单项</th><th scope="col">加权</th><th scope="col">加分</th></tr></thead>
+              <tbody id="score-rows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card rules-card" aria-labelledby="rules-title">
+          <h2 id="rules-title">等级划分</h2>
+          <ul class="grade-scale">
+            <li data-grade="excellent"><span>优秀</span><strong>≥ 90.0</strong></li>
+            <li data-grade="good"><span>良好</span><strong>80.0–89.9</strong></li>
+            <li data-grade="pass"><span>及格</span><strong>60.0–79.9</strong></li>
+            <li data-grade="fail"><span>不及格</span><strong>＜ 60.0</strong></li>
+          </ul>
+          <details>
+            <summary>计分说明</summary>
+            <p>标准分为 7 项得分乘各自权重后相加，满分 100 分。力量项目和耐力跑超过单项满分标准后可各加最多 10 分。</p>
+            <p>BMI 按一位小数查表。其余项目取实际达到的最高档，未达到 10 分档计 0 分。学年总分保留一位小数后评定等级。</p>
+          </details>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="shell site-footer">
+    <span>数据仅在当前页面计算，不上传。</span>
+    <a href="https://github.com/ChenLingHan/cn-college-fitness-calculator">GitHub <span aria-hidden="true">↗</span></a>
+  </footer>
+  <noscript><p class="shell">请启用 JavaScript 以计算成绩。</p></noscript>
+</body>
+</html>
